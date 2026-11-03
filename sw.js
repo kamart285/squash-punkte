@@ -1,5 +1,5 @@
 // Squash Punkte – Service Worker (offline cache, stale-while-revalidate)
-const CACHE = 'squash-punkte-v1';
+const CACHE = 'squash-punkte-v2';
 const ASSETS = ['./', './index.html', './manifest.webmanifest',
   './score.js', './app.js', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png'];
 

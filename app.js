@@ -12,7 +12,7 @@
   var defaults = { nameA: 'Spieler 1', nameB: 'Spieler 2', swap: false, tap: true, light: false, beep: false, keys: DEF_KEYS, dbl: true, dblMs: DBL_MS };
   for (var k in defaults) if (set[k] === undefined) set[k] = JSON.parse(JSON.stringify(defaults[k]));
   var st = load(LS_STATE, null);
-  if (!st || !st.cfg || !st.points || !st.gamesWon) st = S.newMatch();
+  if (!st || !st.cfg || !st.points || !st.gamesWon) { st = S.newMatch(); st.setup = true; }
 
   function saveSet() { localStorage.setItem(LS_SET, JSON.stringify(set)); }
   function saveState() { localStorage.setItem(LS_STATE, JSON.stringify(st)); }
@@ -95,7 +95,30 @@
     var prev = st; point(team);
     lastBtn = { team: team, src: src, t: now, before: prev };
   }
-  function newMatch() { lastBtn = null; st = S.newMatch(st.cfg); saveState(); render(); }
+  function newMatch() { lastBtn = null; st = S.newMatch(st.cfg); st.setup = true; saveState(); render(); openStart(); }
+
+  /* ---------- Start-Dialog: Namen + erster Aufschlag ---------- */
+  var startSrv = 'c';
+  function openStart() {
+    $('tA').value = set.nameA; $('tB').value = set.nameB; startSrv = 'c'; startLabels();
+    $('start').classList.add('show');
+  }
+  function startLabels() {
+    $('dA').textContent = $('tA').value.trim() || 'Spieler 1'; $('dB').textContent = $('tB').value.trim() || 'Spieler 2';
+    $('bKeep').textContent = 'Weiter mit ' + set.nameA + ' / ' + set.nameB;
+    [].forEach.call($('srvb').children, function (b) { b.classList.toggle('on', b.getAttribute('data-s') === String(startSrv)); });
+  }
+  $('tA').oninput = startLabels; $('tB').oninput = startLabels;
+  $('srvb').onclick = function (e) { var b = e.target.closest('button'); if (!b) return; var v = b.getAttribute('data-s'); startSrv = v === 'c' ? 'c' : +v; startLabels(); };
+  function startGo(useTyped) {
+    if (useTyped) { set.nameA = $('tA').value.trim() || 'Spieler 1'; set.nameB = $('tB').value.trim() || 'Spieler 2'; saveSet(); }
+    $('start').classList.remove('show'); delete st.setup; saveState();
+    var t = startSrv;
+    if (t === 'c') { var a = new Uint8Array(1); try { crypto.getRandomValues(a); } catch (e) { a[0] = Math.random() * 256; } t = a[0] & 1; }
+    serve(t);
+  }
+  $('bKeep').onclick = function () { startGo(false); };
+  $('bGo').onclick = function () { startGo(true); };
 
   /* ---------- Antippen ---------- */
   var press = null;
@@ -132,6 +155,7 @@
     $('lastKey').textContent = 'Letzte Taste: ' + kn;
     if (learn) { e.preventDefault(); ['A', 'B', 'U'].forEach(function (x) { set.keys[x] = set.keys[x].filter(function (y) { return y !== kn; }); });
       set.keys[learn].push(kn); learn = null; saveSet(); renderKeys(); return; }
+    if ($('start').classList.contains('show')) return;
     if ($('settings').classList.contains('show')) { if (kn === 'Escape') closeSettings(); return; }
     var hit = null; ['A', 'B', 'U'].forEach(function (x) { if (set.keys[x].indexOf(kn) >= 0 || set.keys[x].indexOf(kn.toLowerCase()) >= 0) hit = x; });
     if (!hit) return;
@@ -200,6 +224,6 @@
   window.addEventListener('storage', function (e) { if (e.key === LS_STATE && e.newValue) { st = JSON.parse(e.newValue); render(); } });
   if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('sw.js').catch(function () {});
 
-  render();
+  render(); if (st.setup) openStart();
   window.__sq = { state: function () { return st; }, settings: function () { return set; }, summary: function () { return S.summary(st); } };
 })();
