@@ -109,6 +109,8 @@ input[type=text]{font:inherit;font-size:18px;padding:10px 12px;border-radius:10p
 #start label{flex:1;display:flex;flex-direction:column;gap:.8vh;font-size:3vh;color:var(--dim);font-weight:700}
 #start input{font:inherit;font-size:4.5vh;font-weight:800;padding:1.6vh 2vh;border-radius:1.6vh;border:2px solid var(--line);background:var(--panel);color:var(--fg);width:100%;min-height:56px}
 #start .lA input{color:var(--a)}#start .lB input{color:var(--b)}
+#start .chips{display:flex;flex-wrap:wrap;gap:1vh}
+#start .chips button{font-size:2.8vh;padding:1.2vh 1.8vh;min-height:48px;border-radius:5vh}
 #start .srvq{font-size:3vh;color:var(--dim);font-weight:700;text-align:center}
 #start .srvb{display:flex;gap:1.5vw}
 #start .srvb button{flex:1;font-size:3.6vh;padding:1.8vh 1vw;min-height:56px;border:3px solid transparent;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -159,7 +161,7 @@ input[type=text]{font:inherit;font-size:18px;padding:10px 12px;border-radius:10p
 <div id="start">
   <div class="box">
     <h1>Neues Match</h1>
-    <div class="nm"><label class="lA">Links<input type="text" id="tA" maxlength="16" autocomplete="off"></label><label class="lB">Rechts<input type="text" id="tB" maxlength="16" autocomplete="off"></label></div>
+    <div class="nm"><label class="lA">Links<input type="text" id="tA" maxlength="16" autocomplete="off"><span class="chips" id="cA"></span></label><label class="lB">Rechts<input type="text" id="tB" maxlength="16" autocomplete="off"><span class="chips" id="cB"></span></label></div>
     <div class="srvq">Wer schlägt zuerst auf?</div>
     <div class="srvb" id="srvb"><button class="btn" data-s="0" id="dA"></button><button class="btn" data-s="1" id="dB"></button><button class="btn on" data-s="c">🪙 Münzwurf</button></div>
     <div class="go"><button class="btn" id="bKeep">Weiter</button><button class="btn pri" id="bGo">Los geht's</button></div>
@@ -173,7 +175,7 @@ input[type=text]{font:inherit;font-size:18px;padding:10px 12px;border-radius:10p
     <h3>Namen</h3>
     <div class="card">
       <div class="row2"><label class="f">Links<input type="text" id="iA" maxlength="16"></label><label class="f">Rechts<input type="text" id="iB" maxlength="16"></label></div>
-      <div class="row2"><button class="btn" data-names="Spieler 1|Spieler 2">Spieler 1 / 2</button><button class="btn" data-names="Ich|Gegner">Ich / Gegner</button><button class="btn" id="bSwap">⇄ Seiten tauschen</button></div>
+      <div class="row2"><button class="btn" data-names="Artur|Kamila">Artur / Kamila</button><button class="btn" data-names="Spieler 1|Spieler 2">Spieler 1 / 2</button><button class="btn" data-names="Ich|Gegner">Ich / Gegner</button><button class="btn" id="bSwap">⇄ Seiten tauschen</button></div>
     </div>
     <h3>Zählweise</h3>
     <div class="card">
@@ -197,7 +199,7 @@ input[type=text]{font:inherit;font-size:18px;padding:10px 12px;border-radius:10p
       <div class="keys" id="keys"></div>
       <div id="lastKey">Letzte Taste: –</div>
     </div>
-    <div class="ver">Squash Punkte v2 · Daten bleiben auf diesem Gerät</div>
+    <div class="ver">Squash Punkte v3 · Daten bleiben auf diesem Gerät</div>
    </div>
   </div>
 </div>

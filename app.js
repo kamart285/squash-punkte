@@ -9,7 +9,7 @@
   function load(k, d) { try { var v = JSON.parse(localStorage.getItem(k)); return v || d; } catch (e) { return d; } }
 
   var set = load(LS_SET, {});
-  var defaults = { nameA: 'Spieler 1', nameB: 'Spieler 2', swap: false, tap: true, light: false, beep: false, keys: DEF_KEYS, dbl: true, dblMs: DBL_MS };
+  var defaults = { nameA: 'Artur', nameB: 'Kamila', swap: false, tap: true, light: false, beep: false, keys: DEF_KEYS, dbl: true, dblMs: DBL_MS };
   for (var k in defaults) if (set[k] === undefined) set[k] = JSON.parse(JSON.stringify(defaults[k]));
   var st = load(LS_STATE, null);
   if (!st || !st.cfg || !st.points || !st.gamesWon) { st = S.newMatch(); st.setup = true; }
@@ -104,14 +104,20 @@
     $('start').classList.add('show');
   }
   function startLabels() {
-    $('dA').textContent = $('tA').value.trim() || 'Spieler 1'; $('dB').textContent = $('tB').value.trim() || 'Spieler 2';
+    $('dA').textContent = $('tA').value.trim() || 'Artur'; $('dB').textContent = $('tB').value.trim() || 'Kamila';
     $('bKeep').textContent = 'Weiter mit ' + set.nameA + ' / ' + set.nameB;
     [].forEach.call($('srvb').children, function (b) { b.classList.toggle('on', b.getAttribute('data-s') === String(startSrv)); });
   }
+  var CHIPS = ['Artur', 'Kamila', 'Spieler 1', 'Spieler 2'];
+  ['A', 'B'].forEach(function (c) {
+    var box = $('c' + c);
+    box.innerHTML = CHIPS.map(function (n) { return '<button class="btn" type="button">' + esc(n) + '</button>'; }).join('');
+    box.onclick = function (e) { var b = e.target.closest('button'); if (!b) return; $('t' + c).value = b.textContent; startLabels(); };
+  });
   $('tA').oninput = startLabels; $('tB').oninput = startLabels;
   $('srvb').onclick = function (e) { var b = e.target.closest('button'); if (!b) return; var v = b.getAttribute('data-s'); startSrv = v === 'c' ? 'c' : +v; startLabels(); };
   function startGo(useTyped) {
-    if (useTyped) { set.nameA = $('tA').value.trim() || 'Spieler 1'; set.nameB = $('tB').value.trim() || 'Spieler 2'; saveSet(); }
+    if (useTyped) { set.nameA = $('tA').value.trim() || 'Artur'; set.nameB = $('tB').value.trim() || 'Kamila'; saveSet(); }
     $('start').classList.remove('show'); delete st.setup; saveState();
     var t = startSrv;
     if (t === 'c') { var a = new Uint8Array(1); try { crypto.getRandomValues(a); } catch (e) { a[0] = Math.random() * 256; } t = a[0] & 1; }
@@ -209,7 +215,7 @@
   }
   function closeSettings() { learn = null; $('settings').classList.remove('show'); render(); }
   $('bSet').onclick = openSettings; $('sClose').onclick = closeSettings;
-  function nm() { set.nameA = $('iA').value.trim() || 'Spieler 1'; set.nameB = $('iB').value.trim() || 'Spieler 2'; saveSet(); render(); renderKeys(); }
+  function nm() { set.nameA = $('iA').value.trim() || 'Artur'; set.nameB = $('iB').value.trim() || 'Kamila'; saveSet(); render(); renderKeys(); }
   $('iA').oninput = nm; $('iB').oninput = nm;
   [].forEach.call(document.querySelectorAll('[data-names]'), function (b) { b.onclick = function () { var p = b.getAttribute('data-names').split('|'); $('iA').value = p[0]; $('iB').value = p[1]; nm(); }; });
   $('bSwap').onclick = function () { set.swap = !set.swap; saveSet(); render(); banner('Seiten getauscht'); };
